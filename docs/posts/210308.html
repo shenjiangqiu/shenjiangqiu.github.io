@@ -1,0 +1,277 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <title>DGL</title>
+    </head>
+    <body>
+    <div>
+      <h2>DGL</h2>
+      <h1>DGL</h1>
+<h2>task list</h2>
+<ul>
+<li>[x] debug new_gcn </li>
+<li>[ ] read EnGNN</li>
+<li>[x] read dgl interface and example and read gin.</li>
+<li>[x] translate GoG graph into New-gcn 
+<ul>
+<li>[x] read scipy interface</li>
+<li>[x] load the graph into scipy and write the .graph</li>
+<li>[x] add to server and add to the script for downloading.</li>
+</ul>
+</li>
+<li>[x] install the cuda-10.2 environment</li>
+</ul>
+<hr />
+<ul>
+<li><a href="#dgl">DGL</a>
+<ul>
+<li><a href="#task-list">task list</a></li>
+<li><a href="#data-struct-class-redditdatasetdglbuiltindataset">data struct: class RedditDataset(DGLBuiltinDataset):</a></li>
+<li><a href="#data-structdglheterograph">data struct:DGLHeteroGraph</a></li>
+<li><a href="#graph-functions">graph functions:</a></li>
+<li><a href="#scipy-sp">scipy sp</a></li>
+<li><a href="#install-cuda10-envirionment">install cuda10 envirionment</a></li>
+</ul>
+</li>
+</ul>
+<h2>data struct: class RedditDataset(DGLBuiltinDataset):</h2>
+<p>in examples/pytorch/graphsage/train_sampling.py:216,
+it returns:</p>
+<pre style="background-color:#2b303b;">
+<span style="color:#c0c5ce;">g, n_classes = </span><span style="color:#8fa1b3;">load_reddit</span><span style="color:#c0c5ce;">()
+</span></pre>
+<p>where:</p>
+<pre style="background-color:#2b303b;">
+<span style="color:#c0c5ce;">
+</span><span style="color:#b48ead;">def </span><span style="color:#8fa1b3;">load_reddit</span><span style="color:#c0c5ce;">():
+</span><span style="color:#c0c5ce;">    </span><span style="color:#b48ead;">from </span><span style="color:#c0c5ce;">dgl.data </span><span style="color:#b48ead;">import </span><span style="color:#c0c5ce;">RedditDataset
+</span><span style="color:#c0c5ce;">
+</span><span style="color:#c0c5ce;">    </span><span style="color:#65737e;"># load reddit data
+</span><span style="color:#c0c5ce;">    data = </span><span style="color:#8fa1b3;">RedditDataset</span><span style="color:#c0c5ce;">(</span><span style="color:#bf616a;">self_loop</span><span style="color:#c0c5ce;">=</span><span style="color:#d08770;">True</span><span style="color:#c0c5ce;">)
+</span><span style="color:#c0c5ce;">    g = data[</span><span style="color:#d08770;">0</span><span style="color:#c0c5ce;">]
+</span><span style="color:#c0c5ce;">    g.ndata[&#39;</span><span style="color:#a3be8c;">features</span><span style="color:#c0c5ce;">&#39;] = g.ndata[&#39;</span><span style="color:#a3be8c;">feat</span><span style="color:#c0c5ce;">&#39;]
+</span><span style="color:#c0c5ce;">    g.ndata[&#39;</span><span style="color:#a3be8c;">labels</span><span style="color:#c0c5ce;">&#39;] = g.ndata[&#39;</span><span style="color:#a3be8c;">label</span><span style="color:#c0c5ce;">&#39;]
+</span><span style="color:#c0c5ce;">    </span><span style="color:#b48ead;">return </span><span style="color:#c0c5ce;">g, data.num_labels
+</span><span style="color:#c0c5ce;">
+</span></pre>
+<p>data[0] represent the graph, which is from:</p>
+<pre style="background-color:#2b303b;">
+<span style="color:#65737e;"># graph
+</span><span style="color:#c0c5ce;">        coo_adj = sp.</span><span style="color:#8fa1b3;">load_npz</span><span style="color:#c0c5ce;">(os.path.</span><span style="color:#8fa1b3;">join</span><span style="color:#c0c5ce;">(
+</span><span style="color:#c0c5ce;">            </span><span style="color:#bf616a;">self</span><span style="color:#c0c5ce;">.raw_path, &quot;</span><span style="color:#a3be8c;">reddit</span><span style="color:#d08770;">{}</span><span style="color:#a3be8c;">_graph.npz</span><span style="color:#c0c5ce;">&quot;.</span><span style="color:#8fa1b3;">format</span><span style="color:#c0c5ce;">(</span><span style="color:#bf616a;">self</span><span style="color:#c0c5ce;">._self_loop_str)))
+</span><span style="color:#c0c5ce;">        </span><span style="color:#bf616a;">self</span><span style="color:#c0c5ce;">._graph = </span><span style="color:#8fa1b3;">from_scipy</span><span style="color:#c0c5ce;">(coo_adj)
+</span></pre>
+<p>the type of the graph is <em><strong>DGLHeteroGraph</strong></em></p>
+<hr />
+<h2>data struct:DGLHeteroGraph</h2>
+<pre style="background-color:#2b303b;">
+<span style="color:#65737e;">&quot;&quot;&quot;Class for storing graph structure and node/edge feature data.
+</span><span style="color:#65737e;">
+</span><span style="color:#65737e;">    There are a few ways to create a DGLGraph:
+</span><span style="color:#65737e;">
+</span><span style="color:#65737e;">    * To create a homogeneous graph from Tensor data, use :func:`dgl.graph`.
+</span><span style="color:#65737e;">    * To create a heterogeneous graph from Tensor data, use :func:`dgl.heterograph`.
+</span><span style="color:#65737e;">    * To create a graph from other data sources, use ``dgl.*`` create ops. See
+</span><span style="color:#65737e;">      :ref:`api-graph-create-ops`.
+</span><span style="color:#65737e;">
+</span><span style="color:#65737e;">    Read the user guide chapter :ref:`guide-graph` for an in-depth explanation about its
+</span><span style="color:#65737e;">    usage.
+</span><span style="color:#65737e;">    &quot;&quot;&quot;
+</span></pre>
+<p><img src="https://data.dgl.ai/asset/image/user_guide_graphch_2.png" alt="Hetero" /></p>
+<p>相比同构图，异构图里可以有不同类型的节点和边。这些不同类型的节点和边具有独立的ID空间和特征。 例如在下图中，”用户”和”游戏”节点的ID都是从0开始的，而且两种节点具有不同的特征。</p>
+<pre style="background-color:#2b303b;">
+<span style="color:#b48ead;">import </span><span style="color:#c0c5ce;">dgl
+</span><span style="color:#b48ead;">import </span><span style="color:#c0c5ce;">torch </span><span style="color:#b48ead;">as </span><span style="color:#c0c5ce;">th
+</span><span style="color:#65737e;"># 创建一个具有3种节点类型和3种边类型的异构图
+</span><span style="color:#c0c5ce;">graph_data = {
+</span><span style="color:#c0c5ce;">   (&#39;</span><span style="color:#a3be8c;">drug</span><span style="color:#c0c5ce;">&#39;, &#39;</span><span style="color:#a3be8c;">interacts</span><span style="color:#c0c5ce;">&#39;, &#39;</span><span style="color:#a3be8c;">drug</span><span style="color:#c0c5ce;">&#39;): (th.</span><span style="color:#8fa1b3;">tensor</span><span style="color:#c0c5ce;">([</span><span style="color:#d08770;">0</span><span style="color:#c0c5ce;">, </span><span style="color:#d08770;">1</span><span style="color:#c0c5ce;">]), th.</span><span style="color:#8fa1b3;">tensor</span><span style="color:#c0c5ce;">([</span><span style="color:#d08770;">1</span><span style="color:#c0c5ce;">, </span><span style="color:#d08770;">2</span><span style="color:#c0c5ce;">])),
+</span><span style="color:#c0c5ce;">   (&#39;</span><span style="color:#a3be8c;">drug</span><span style="color:#c0c5ce;">&#39;, &#39;</span><span style="color:#a3be8c;">interacts</span><span style="color:#c0c5ce;">&#39;, &#39;</span><span style="color:#a3be8c;">gene</span><span style="color:#c0c5ce;">&#39;): (th.</span><span style="color:#8fa1b3;">tensor</span><span style="color:#c0c5ce;">([</span><span style="color:#d08770;">0</span><span style="color:#c0c5ce;">, </span><span style="color:#d08770;">1</span><span style="color:#c0c5ce;">]), th.</span><span style="color:#8fa1b3;">tensor</span><span style="color:#c0c5ce;">([</span><span style="color:#d08770;">2</span><span style="color:#c0c5ce;">, </span><span style="color:#d08770;">3</span><span style="color:#c0c5ce;">])),
+</span><span style="color:#c0c5ce;">   (&#39;</span><span style="color:#a3be8c;">drug</span><span style="color:#c0c5ce;">&#39;, &#39;</span><span style="color:#a3be8c;">treats</span><span style="color:#c0c5ce;">&#39;, &#39;</span><span style="color:#a3be8c;">disease</span><span style="color:#c0c5ce;">&#39;): (th.</span><span style="color:#8fa1b3;">tensor</span><span style="color:#c0c5ce;">([</span><span style="color:#d08770;">1</span><span style="color:#c0c5ce;">]), th.</span><span style="color:#8fa1b3;">tensor</span><span style="color:#c0c5ce;">([</span><span style="color:#d08770;">2</span><span style="color:#c0c5ce;">]))
+</span><span style="color:#c0c5ce;">}
+</span><span style="color:#c0c5ce;">g = dgl.</span><span style="color:#8fa1b3;">heterograph</span><span style="color:#c0c5ce;">(graph_data)
+</span><span style="color:#c0c5ce;">g.ntypes
+</span><span style="color:#c0c5ce;">g.etypes
+</span><span style="color:#c0c5ce;">g.canonical_etypes
+</span></pre>
+<hr />
+<h2>graph functions:</h2>
+<p><img src="pics/1.png" alt="123" />
+experiemtns:</p>
+<p>apply edges: play edge update:</p>
+<pre style="background-color:#2b303b;">
+<span style="color:#b48ead;">from </span><span style="color:#c0c5ce;">dgl </span><span style="color:#b48ead;">import </span><span style="color:#c0c5ce;">function </span><span style="color:#b48ead;">as </span><span style="color:#c0c5ce;">fn
+</span><span style="color:#b48ead;">import </span><span style="color:#c0c5ce;">dgl
+</span><span style="color:#b48ead;">import </span><span style="color:#c0c5ce;">torch
+</span><span style="color:#c0c5ce;">g=dgl.</span><span style="color:#8fa1b3;">graph</span><span style="color:#c0c5ce;">(([</span><span style="color:#d08770;">0</span><span style="color:#c0c5ce;">,</span><span style="color:#d08770;">1</span><span style="color:#c0c5ce;">,</span><span style="color:#d08770;">2</span><span style="color:#c0c5ce;">,</span><span style="color:#d08770;">3</span><span style="color:#c0c5ce;">],[</span><span style="color:#d08770;">1</span><span style="color:#c0c5ce;">,</span><span style="color:#d08770;">2</span><span style="color:#c0c5ce;">,</span><span style="color:#d08770;">3</span><span style="color:#c0c5ce;">,</span><span style="color:#d08770;">4</span><span style="color:#c0c5ce;">]))
+</span><span style="color:#c0c5ce;">g.ndata[&#39;</span><span style="color:#a3be8c;">h</span><span style="color:#c0c5ce;">&#39;]=torch.</span><span style="color:#8fa1b3;">ones</span><span style="color:#c0c5ce;">(</span><span style="color:#d08770;">5</span><span style="color:#c0c5ce;">,</span><span style="color:#d08770;">2</span><span style="color:#c0c5ce;">)
+</span><span style="color:#65737e;">#g.apply_edges(lambda edges:{&#39;x&#39;:edges.src[&#39;h&#39;]+edges.dst[&#39;h&#39;]})
+</span><span style="color:#c0c5ce;">g.</span><span style="color:#8fa1b3;">apply_edges</span><span style="color:#c0c5ce;">(fn.</span><span style="color:#8fa1b3;">u_add_v</span><span style="color:#c0c5ce;">(&quot;</span><span style="color:#a3be8c;">h</span><span style="color:#c0c5ce;">&quot;,&#39;</span><span style="color:#a3be8c;">h</span><span style="color:#c0c5ce;">&#39;,&#39;</span><span style="color:#a3be8c;">x</span><span style="color:#c0c5ce;">&#39;))
+</span><span style="color:#96b5b4;">print</span><span style="color:#c0c5ce;">(g.edata[&#39;</span><span style="color:#a3be8c;">x</span><span style="color:#c0c5ce;">&#39;])
+</span></pre>
+<p>update_all: propagate, reduction, and apply:</p>
+<pre style="background-color:#2b303b;">
+<span style="color:#b48ead;">from </span><span style="color:#c0c5ce;">dgl </span><span style="color:#b48ead;">import </span><span style="color:#c0c5ce;">function </span><span style="color:#b48ead;">as </span><span style="color:#c0c5ce;">fn
+</span><span style="color:#b48ead;">import </span><span style="color:#c0c5ce;">dgl
+</span><span style="color:#b48ead;">import </span><span style="color:#c0c5ce;">torch
+</span><span style="color:#c0c5ce;">g=dgl.</span><span style="color:#8fa1b3;">graph</span><span style="color:#c0c5ce;">(([</span><span style="color:#d08770;">0</span><span style="color:#c0c5ce;">,</span><span style="color:#d08770;">1</span><span style="color:#c0c5ce;">,</span><span style="color:#d08770;">2</span><span style="color:#c0c5ce;">,</span><span style="color:#d08770;">3</span><span style="color:#c0c5ce;">,</span><span style="color:#d08770;">0</span><span style="color:#c0c5ce;">],[</span><span style="color:#d08770;">1</span><span style="color:#c0c5ce;">,</span><span style="color:#d08770;">2</span><span style="color:#c0c5ce;">,</span><span style="color:#d08770;">3</span><span style="color:#c0c5ce;">,</span><span style="color:#d08770;">4</span><span style="color:#c0c5ce;">,</span><span style="color:#d08770;">2</span><span style="color:#c0c5ce;">]))
+</span><span style="color:#c0c5ce;">g.ndata[&#39;</span><span style="color:#a3be8c;">h</span><span style="color:#c0c5ce;">&#39;]=torch.</span><span style="color:#8fa1b3;">ones</span><span style="color:#c0c5ce;">(</span><span style="color:#d08770;">5</span><span style="color:#c0c5ce;">,</span><span style="color:#d08770;">2</span><span style="color:#c0c5ce;">)
+</span><span style="color:#c0c5ce;">
+</span><span style="color:#c0c5ce;">
+</span><span style="color:#c0c5ce;">g.</span><span style="color:#8fa1b3;">update_all</span><span style="color:#c0c5ce;">(fn.</span><span style="color:#8fa1b3;">copy_u</span><span style="color:#c0c5ce;">(&quot;</span><span style="color:#a3be8c;">h</span><span style="color:#c0c5ce;">&quot;,&quot;</span><span style="color:#a3be8c;">m</span><span style="color:#c0c5ce;">&quot;),fn.</span><span style="color:#8fa1b3;">sum</span><span style="color:#c0c5ce;">(&quot;</span><span style="color:#a3be8c;">m</span><span style="color:#c0c5ce;">&quot;,&quot;</span><span style="color:#a3be8c;">x</span><span style="color:#c0c5ce;">&quot;))
+</span><span style="color:#96b5b4;">print</span><span style="color:#c0c5ce;">(g.ndata[&#39;</span><span style="color:#a3be8c;">x</span><span style="color:#c0c5ce;">&#39;])
+</span><span style="color:#c0c5ce;">
+</span></pre>
+<p>GIN model:
+clss GIN:formard(self,g,h):g:graph,h
+which contains the GraphConv layers and predict layers, the main problem is  how the dataset present</p>
+<p>have a close look at the GIN_dataset, 
+for the dataset, there are multiple subgraphs, and each subgraph have one lable, inside each graph, each node have a label. The key is here: how the model fetch the data inside the dataset.</p>
+<p>have a close look at GIN_dataloader:
+GIN_dataloader is simply two GraphDataLoader:</p>
+<pre style="background-color:#2b303b;">
+<span style="color:#b48ead;">class </span><span style="color:#ebcb8b;">GraphDataLoader</span><span style="color:#eff1f5;">:
+</span><span style="color:#c0c5ce;">    </span><span style="color:#b48ead;">def </span><span style="color:#96b5b4;">__init__</span><span style="color:#c0c5ce;">(</span><span style="color:#bf616a;">self</span><span style="color:#c0c5ce;">, </span><span style="color:#bf616a;">dataset</span><span style="color:#c0c5ce;">, </span><span style="color:#bf616a;">collate_fn</span><span style="color:#c0c5ce;">=</span><span style="color:#d08770;">None</span><span style="color:#c0c5ce;">, **</span><span style="color:#bf616a;">kwargs</span><span style="color:#c0c5ce;">):
+</span><span style="color:#c0c5ce;">        collator_kwargs = {}
+</span><span style="color:#c0c5ce;">        dataloader_kwargs = {}
+</span><span style="color:#c0c5ce;">        </span><span style="color:#b48ead;">for </span><span style="color:#c0c5ce;">k, v </span><span style="color:#b48ead;">in </span><span style="color:#c0c5ce;">kwargs.</span><span style="color:#8fa1b3;">items</span><span style="color:#c0c5ce;">():
+</span><span style="color:#c0c5ce;">            </span><span style="color:#b48ead;">if </span><span style="color:#c0c5ce;">k in </span><span style="color:#bf616a;">self</span><span style="color:#c0c5ce;">.collator_arglist:
+</span><span style="color:#c0c5ce;">                collator_kwargs[k] = v
+</span><span style="color:#c0c5ce;">            </span><span style="color:#b48ead;">else</span><span style="color:#c0c5ce;">:
+</span><span style="color:#c0c5ce;">                dataloader_kwargs[k] = v
+</span><span style="color:#c0c5ce;">
+</span><span style="color:#c0c5ce;">        </span><span style="color:#b48ead;">if </span><span style="color:#c0c5ce;">collate_fn is </span><span style="color:#d08770;">None</span><span style="color:#c0c5ce;">:
+</span><span style="color:#c0c5ce;">            </span><span style="color:#bf616a;">self</span><span style="color:#c0c5ce;">.collate = </span><span style="color:#8fa1b3;">GraphCollator</span><span style="color:#c0c5ce;">(**collator_kwargs).collate
+</span><span style="color:#c0c5ce;">        </span><span style="color:#b48ead;">else</span><span style="color:#c0c5ce;">:
+</span><span style="color:#c0c5ce;">            </span><span style="color:#bf616a;">self</span><span style="color:#c0c5ce;">.collate = collate_fn
+</span><span style="color:#c0c5ce;">
+</span><span style="color:#c0c5ce;">        </span><span style="color:#bf616a;">self</span><span style="color:#c0c5ce;">.dataloader = </span><span style="color:#8fa1b3;">DataLoader</span><span style="color:#c0c5ce;">(</span><span style="color:#bf616a;">dataset</span><span style="color:#c0c5ce;">=dataset,
+</span><span style="color:#c0c5ce;">                                     </span><span style="color:#bf616a;">collate_fn</span><span style="color:#c0c5ce;">=</span><span style="color:#bf616a;">self</span><span style="color:#c0c5ce;">.collate,
+</span><span style="color:#c0c5ce;">                                     **dataloader_kwargs)
+</span><span style="color:#c0c5ce;">
+</span></pre>
+<p>the collate defines how to combine the graphs inside a batch:</p>
+<pre style="background-color:#2b303b;">
+<span style="color:#c0c5ce;">    </span><span style="color:#b48ead;">r</span><span style="color:#65737e;">&quot;&quot;&quot;Batch a collection of :class:`DGLGraph` s into one graph for more efficient
+</span><span style="color:#65737e;">    graph computation.
+</span><span style="color:#65737e;">
+</span><span style="color:#65737e;">    Each input graph becomes one disjoint component of the batched graph. The nodes
+</span><span style="color:#65737e;">    and edges are relabeled to be disjoint segments:
+</span><span style="color:#65737e;">
+</span><span style="color:#65737e;">    =================  =========  =================  ===  =========
+</span><span style="color:#65737e;">                       graphs[0]  graphs[1]          ...  graphs[k]
+</span><span style="color:#65737e;">    =================  =========  =================  ===  =========
+</span><span style="color:#65737e;">    Original node ID   0 ~ N_0    0 ~ N_1            ...  0 ~ N_k
+</span><span style="color:#65737e;">    New node ID        0 ~ N_0    N_0+1 ~ N_0+N_1+1  ...  1+\sum_{i=0}^{k-1} N_i ~
+</span><span style="color:#65737e;">                                                          1+\sum_{i=0}^k N_i
+</span><span style="color:#65737e;">    =================  =========  =================  ===  =========
+</span></pre>
+<p>So every time the data return a combined large graph like this.</p>
+<p>now we can finally have a look at the model:</p>
+<pre style="background-color:#2b303b;">
+<span style="color:#65737e;">#in main.py::eval:
+</span><span style="color:#c0c5ce;">        feat = graphs.ndata.</span><span style="color:#8fa1b3;">pop</span><span style="color:#c0c5ce;">(&#39;</span><span style="color:#a3be8c;">attr</span><span style="color:#c0c5ce;">&#39;)
+</span><span style="color:#c0c5ce;">        </span><span style="color:#65737e;">#the shapre of feat is 590x7
+</span><span style="color:#c0c5ce;">        total += </span><span style="color:#96b5b4;">len</span><span style="color:#c0c5ce;">(labels)
+</span><span style="color:#c0c5ce;">        outputs = </span><span style="color:#8fa1b3;">net</span><span style="color:#c0c5ce;">(graphs, feat)
+</span><span style="color:#c0c5ce;">        </span><span style="color:#65737e;">#the shapre of the outputs is 32,2
+</span><span style="color:#c0c5ce;">        </span><span style="color:#bf616a;">_</span><span style="color:#c0c5ce;">, predicted = torch.</span><span style="color:#8fa1b3;">max</span><span style="color:#c0c5ce;">(outputs.data, </span><span style="color:#d08770;">1</span><span style="color:#c0c5ce;">)
+</span><span style="color:#c0c5ce;">        </span><span style="color:#65737e;">#the shape of the predicted is 32,1
+</span><span style="color:#c0c5ce;">        total_correct += (predicted == labels.data).</span><span style="color:#8fa1b3;">sum</span><span style="color:#c0c5ce;">().</span><span style="color:#8fa1b3;">item</span><span style="color:#c0c5ce;">()
+</span></pre>
+<p>for this now, we can see when batch size is 32, the output will be 32 results.</p>
+<p>now look at net.forward:</p>
+<pre style="background-color:#2b303b;">
+<span style="color:#65737e;"># first go through the Ginlayers, and save each hidden layer,
+</span><span style="color:#c0c5ce;">        </span><span style="color:#b48ead;">for </span><span style="color:#c0c5ce;">i </span><span style="color:#b48ead;">in </span><span style="color:#96b5b4;">range</span><span style="color:#c0c5ce;">(</span><span style="color:#bf616a;">self</span><span style="color:#c0c5ce;">.num_layers - </span><span style="color:#d08770;">1</span><span style="color:#c0c5ce;">):
+</span><span style="color:#c0c5ce;">            h = </span><span style="color:#bf616a;">self</span><span style="color:#c0c5ce;">.ginlayers[i](g, h)
+</span><span style="color:#c0c5ce;">            h = </span><span style="color:#bf616a;">self</span><span style="color:#c0c5ce;">.batch_norms[i](h)
+</span><span style="color:#c0c5ce;">            h = F.</span><span style="color:#8fa1b3;">relu</span><span style="color:#c0c5ce;">(h)
+</span><span style="color:#c0c5ce;">            hidden_rep.</span><span style="color:#8fa1b3;">append</span><span style="color:#c0c5ce;">(h)
+</span><span style="color:#65737e;"># then for each hidden layer, calculate the classification score and add them up:
+</span><span style="color:#c0c5ce;">        </span><span style="color:#65737e;"># perform pooling over all nodes in each graph in every layer
+</span><span style="color:#c0c5ce;">        </span><span style="color:#b48ead;">for </span><span style="color:#c0c5ce;">i, h </span><span style="color:#b48ead;">in </span><span style="color:#96b5b4;">enumerate</span><span style="color:#c0c5ce;">(hidden_rep):
+</span><span style="color:#c0c5ce;">            pooled_h = </span><span style="color:#bf616a;">self</span><span style="color:#c0c5ce;">.</span><span style="color:#8fa1b3;">pool</span><span style="color:#c0c5ce;">(g, h)
+</span><span style="color:#c0c5ce;">            score_over_layer += </span><span style="color:#bf616a;">self</span><span style="color:#c0c5ce;">.</span><span style="color:#8fa1b3;">drop</span><span style="color:#c0c5ce;">(</span><span style="color:#bf616a;">self</span><span style="color:#c0c5ce;">.linears_prediction[i](pooled_h))
+</span><span style="color:#c0c5ce;">
+</span><span style="color:#c0c5ce;">
+</span></pre>
+<p>The most important part here is the self.pool, it's different of general pool, it use read_out to combine each batch and formate into one graph's representation, in here, h's shape is 570x7, and pooled_h is 32_7, where 570 is the total nodes in this batch, and 32 is the batch size.</p>
+<p><em><strong>overall conclusion of the GIN</strong></em>: for each mini graph, it have a lable, and for each node in a graph, it have a lable and an &quot;attr&quot; we use the &quot;attr&quot; and the connection of the graph as input, calculate each hidden layer output, and use hidden layer to merge all reasult of the nodes into on graph representation. finnaly combine all hidder layer's predict result to form final result.</p>
+<p>several operations in GIN:</p>
+<ul>
+<li>
+<p>input: a large graph whicn combines multiple small graph, fro example:small graph:20x7,graph_num:10,large graph: 200x7.</p>
+</li>
+<li>
+<p>first for each layer,go througn ginlayer,batch_norms,and relu,save each layer's hidden rep,</p>
+</li>
+<li>
+<p>output: layer 1: 200x64,layer 2:200x64...</p>
+</li>
+<li>
+<p>next for each layer's hidden,use pool(g,h) to pool the graph, in GIN pool is same as read out, that's partially sum the big graph again into the small graphs,</p>
+<ul>
+<li>
+<p>there are three functions, look at the last one, it will get the batch num index and sum inside the index bound.</p>
+</li>
+<li><pre style="background-color:#2b303b;">
+<span style="color:#c0c5ce;">        graph.ndata[&#39;h&#39;] = feat
+</span><span style="color:#c0c5ce;">        readout = sum_nodes(graph, &#39;h&#39;)
+</span><span style="color:#c0c5ce;">        return readout```
+</span></pre></li>
+<li><pre style="background-color:#2b303b;">
+<span style="color:#c0c5ce;">
+</span><span style="color:#c0c5ce;">return readout_nodes(graph, feat, weight, ntype=ntype, op=&#39;sum&#39;)
+</span></pre></li>
+<li>
+<p><code>return segment.segment_reduce(graph.batch_num_nodes(ntype), x, reducer=op)</code></p>
+</li>
+</ul>
+</li>
+<li>
+<p>output: layer 1: 32x64,layer 2: 32x64</p>
+</li>
+<li>
+<p>finnaly, for each layer, use prediction layer to generate the label for each sub graph:</p>
+</li>
+<li>
+<p>output: layer 1: 32x2, layer2:32x2</p>
+</li>
+<li>
+<p>then output the sum of all the hidder layers</p>
+</li>
+<li>
+<p>output 1x2</p>
+</li>
+</ul>
+<hr />
+<h2>scipy sp</h2>
+<pre style="background-color:#2b303b;">
+<span style="color:#b48ead;">import </span><span style="color:#c0c5ce;">numpy </span><span style="color:#b48ead;">as </span><span style="color:#c0c5ce;">np
+</span><span style="color:#b48ead;">from </span><span style="color:#c0c5ce;">scipy.sparse </span><span style="color:#b48ead;">import </span><span style="color:#c0c5ce;">csc_matrix
+</span><span style="color:#8fa1b3;">csc_matrix</span><span style="color:#c0c5ce;">((</span><span style="color:#d08770;">3</span><span style="color:#c0c5ce;">, </span><span style="color:#d08770;">4</span><span style="color:#c0c5ce;">), </span><span style="color:#bf616a;">dtype</span><span style="color:#c0c5ce;">=np.int8).</span><span style="color:#8fa1b3;">toarray</span><span style="color:#c0c5ce;">()
+</span><span style="color:#c0c5ce;">
+</span><span style="color:#c0c5ce;">row = np.</span><span style="color:#8fa1b3;">array</span><span style="color:#c0c5ce;">([</span><span style="color:#d08770;">0</span><span style="color:#c0c5ce;">, </span><span style="color:#d08770;">2</span><span style="color:#c0c5ce;">, </span><span style="color:#d08770;">2</span><span style="color:#c0c5ce;">, </span><span style="color:#d08770;">0</span><span style="color:#c0c5ce;">, </span><span style="color:#d08770;">1</span><span style="color:#c0c5ce;">, </span><span style="color:#d08770;">2</span><span style="color:#c0c5ce;">])
+</span><span style="color:#c0c5ce;">col = np.</span><span style="color:#8fa1b3;">array</span><span style="color:#c0c5ce;">([</span><span style="color:#d08770;">0</span><span style="color:#c0c5ce;">, </span><span style="color:#d08770;">0</span><span style="color:#c0c5ce;">, </span><span style="color:#d08770;">1</span><span style="color:#c0c5ce;">, </span><span style="color:#d08770;">2</span><span style="color:#c0c5ce;">, </span><span style="color:#d08770;">2</span><span style="color:#c0c5ce;">, </span><span style="color:#d08770;">2</span><span style="color:#c0c5ce;">])
+</span><span style="color:#c0c5ce;">data = np.</span><span style="color:#8fa1b3;">array</span><span style="color:#c0c5ce;">([</span><span style="color:#d08770;">1</span><span style="color:#c0c5ce;">, </span><span style="color:#d08770;">2</span><span style="color:#c0c5ce;">, </span><span style="color:#d08770;">3</span><span style="color:#c0c5ce;">, </span><span style="color:#d08770;">4</span><span style="color:#c0c5ce;">, </span><span style="color:#d08770;">5</span><span style="color:#c0c5ce;">, </span><span style="color:#d08770;">6</span><span style="color:#c0c5ce;">])
+</span><span style="color:#8fa1b3;">csc_matrix</span><span style="color:#c0c5ce;">((data, (row, col)), </span><span style="color:#bf616a;">shape</span><span style="color:#c0c5ce;">=(</span><span style="color:#d08770;">3</span><span style="color:#c0c5ce;">, </span><span style="color:#d08770;">3</span><span style="color:#c0c5ce;">)).</span><span style="color:#8fa1b3;">toarray</span><span style="color:#c0c5ce;">()
+</span><span style="color:#c0c5ce;">
+</span><span style="color:#c0c5ce;">indptr = np.</span><span style="color:#8fa1b3;">array</span><span style="color:#c0c5ce;">([</span><span style="color:#d08770;">0</span><span style="color:#c0c5ce;">, </span><span style="color:#d08770;">2</span><span style="color:#c0c5ce;">, </span><span style="color:#d08770;">3</span><span style="color:#c0c5ce;">, </span><span style="color:#d08770;">6</span><span style="color:#c0c5ce;">])
+</span><span style="color:#c0c5ce;">indices = np.</span><span style="color:#8fa1b3;">array</span><span style="color:#c0c5ce;">([</span><span style="color:#d08770;">0</span><span style="color:#c0c5ce;">, </span><span style="color:#d08770;">2</span><span style="color:#c0c5ce;">, </span><span style="color:#d08770;">2</span><span style="color:#c0c5ce;">, </span><span style="color:#d08770;">0</span><span style="color:#c0c5ce;">, </span><span style="color:#d08770;">1</span><span style="color:#c0c5ce;">, </span><span style="color:#d08770;">2</span><span style="color:#c0c5ce;">])
+</span><span style="color:#c0c5ce;">data = np.</span><span style="color:#8fa1b3;">array</span><span style="color:#c0c5ce;">([</span><span style="color:#d08770;">1</span><span style="color:#c0c5ce;">, </span><span style="color:#d08770;">2</span><span style="color:#c0c5ce;">, </span><span style="color:#d08770;">3</span><span style="color:#c0c5ce;">, </span><span style="color:#d08770;">4</span><span style="color:#c0c5ce;">, </span><span style="color:#d08770;">5</span><span style="color:#c0c5ce;">, </span><span style="color:#d08770;">6</span><span style="color:#c0c5ce;">])
+</span><span style="color:#8fa1b3;">csc_matrix</span><span style="color:#c0c5ce;">((data, indices, indptr), </span><span style="color:#bf616a;">shape</span><span style="color:#c0c5ce;">=(</span><span style="color:#d08770;">3</span><span style="color:#c0c5ce;">, </span><span style="color:#d08770;">3</span><span style="color:#c0c5ce;">)).</span><span style="color:#8fa1b3;">toarray</span><span style="color:#c0c5ce;">()
+</span><span style="color:#c0c5ce;">
+</span></pre>
+<h2>install cuda10 envirionment</h2>
+<pre style="background-color:#2b303b;">
+<span style="color:#c0c5ce;">conda create -n dgl_cuda
+</span><span style="color:#c0c5ce;">conda activate dgl_cuda
+</span><span style="color:#c0c5ce;">conda install pytorch torchvision torchaudio cudatoolkit=10.2 -c pytorch
+</span><span style="color:#c0c5ce;">conda install -c dglteam dgl-cuda10.2
+</span><span style="color:#c0c5ce;">pip install --upgrade tensorflow
+</span></pre>
+    </div>
+  </body>
+</html>

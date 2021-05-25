@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <title>enhance the new GCN, read EnGN</title>
+    </head>
+    <body>
+    <div>
+      <h2>enhance the new GCN, read EnGN</h2>
+      <h1>enhance the new GCN, read EnGN</h1>
+<ul>
+<li>[x] read the HyGcn paper again to get the detail of the computation overhead of the control of tiles(windows)</li>
+<li>[x] read EnGN</li>
+<li>[ ] change the new-gcn</li>
+</ul>
+<h2>menu</h2>
+<ul>
+<li><a href="#enhance-the-new-gcn-read-engn">enhance the new GCN, read EnGN</a>
+<ul>
+<li><a href="#menu">menu</a></li>
+<li><a href="#read-the-paper-engn-of-the-details">read the paper EnGN of the details</a>
+<ul>
+<li><a href="#conclusion">conclusion</a></li>
+<li><a href="#confusions">confusions:</a></li>
+<li><a href="#the-issue-and-background">the issue and background</a></li>
+<li><a href="#implementation">implementation</a>
+<ul>
+<li><a href="#ring-edge-reducerer">ring edge reduce(RER)</a>
+<ul>
+<li><a href="#hard-to-understand-here-how-it-did-it">hard to understand here. how it did it?</a></li>
+</ul>
+</li>
+<li><a href="#section5-proofing">Section5, proofing</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li><a href="#code-modifacations">code modifacations</a></li>
+</ul>
+</li>
+</ul>
+<h2>read the paper EnGN of the details</h2>
+<h3>conclusion</h3>
+<p>main difference:
+the ring PE model for both aggregation and MLP.
+the new computational model for GNN
+the different TILing scheduling.</p>
+<h3>confusions:</h3>
+<p>1, this graph is wrong?? how it reduces it to 3, and what the graph mean, this is the most important contribution in this paper, but I can't understand it. <a href="#hard-to-understand-here-how-it-did-it">link go to here</a></p>
+<h3>the issue and background</h3>
+<ul>
+<li>issues
+<ul>
+<li>how to tailor a unified architecture that efficiently supports the diverse GNN model.</li>
+<li>large graph, limited on-chip memory</li>
+<li>power-law distribution create an imbalanced connection</li>
+</ul>
+</li>
+<li>Solutions
+<ul>
+<li>ring-edge-reduce(RER)</li>
+<li>graph property aware dataflow(GPA) that decouples the vertex property and the hardware structure. and scheduling of the stages.</li>
+<li>graph tiling strategy. high degree of data reusability.
+<ul>
+<li>use either row-oriented and col-oriented(!)</li>
+</ul>
+</li>
+<li>3 level cache, l2 is degree-aware vertex cache(DAVC)...</li>
+</ul>
+</li>
+<li>GNN MODELS
+<img src="pics/2.png" alt="2" />
+<ul>
+<li>GCN
+<ul>
+<li><img src="https://latex.codecogs.com/gif.latex?h%5E%7Bl+1%7D=ReLu(%7B%5Cwidetilde%7BD%7D%7D%5E%7B-1/2%7D%5Cwidetilde%7BA%7D%7B%5Cwidetilde%7BD%7D%7D%5E%7B-1/2%7Dh%5ElW%5El),h%5E0=X" alt="eq1" /></li>
+<li>注意到，
+<img src="https://latex.codecogs.com/gif.latex?%7B%5Cwidetilde%7BD%7D%7D%5E%7B-1/2%7D%5Cwidetilde%7BA%7D%7B%5Cwidetilde%7BD%7D%7D%5E%7B-1/2%7D" alt="eq2" />
+里面，<img src="https://latex.codecogs.com/gif.latex?%7B%5Cwidetilde%7BD%7D%7D" alt="eq2" />是每个顶点的出度，而<img src="https://latex.codecogs.com/gif.latex?%7B%5Cwidetilde%7BD%7D%7D%5E%7B-1/2%7D%5Cwidetilde%7BA%7D%7B%5Cwidetilde%7BD%7D%7D%5E%7B-1/2%7D" alt="eq2" /> 对每条边，先出源节点的出度，再除目标结点的出度，最后得到了一个normalized Adj matrix.把结果×输入，NxN . Nxl = Nxl,对于结果中的每一行，</li>
+<li>more explanation:<a href="https://www.topbots.com/graph-convolutional-networks/">https://www.topbots.com/graph-convolutional-networks/</a></li>
+<li><img src="/assets/Screenshot%202021-03-10%20135603.png" alt="Screenshot 2021-03-10 135603" /></li>
+</ul>
+</li>
+<li>GraphSage-Pool(GS-pool)
+<ul>
+<li>Deep walker:<a href="https://medium.com/analytics-vidhya/an-intuitive-explanation-of-deepwalk-84177f7f2b72">https://medium.com/analytics-vidhya/an-intuitive-explanation-of-deepwalk-84177f7f2b72</a></li>
+<li>GraphSage:<a href="https://towardsdatascience.com/an-intuitive-explanation-of-graphsage-6df9437ee64f">https://towardsdatascience.com/an-intuitive-explanation-of-graphsage-6df9437ee64f</a></li>
+</ul>
+</li>
+<li>Relational Graph convolutional network(R-GCN)</li>
+<li>Gated graph convolution network(Gated-GCN)</li>
+<li>Graph Recurrent network(GRN)</li>
+</ul>
+</li>
+<li>motivation
+<ul>
+<li>aggregation is expensive, we may change the input and the output for aggregation????--&gt;<a href="#section5-proofing">section5</a></li>
+<li>hardware: HyGCN still fails to unleash the potential of the GNN acceleration:
+<ul>
+<li>HyGCN 只适用于小图</li>
+<li>20% vertices connected to 50-80% edges. but all vertices are evenly buffered!</li>
+<li>HyGCN使用前后端，不同的部分可能使用不均匀，统一的硬件更下有效</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<h3>implementation</h3>
+<ul>
+<li>
+<p>EnGN implementation</p>
+</li>
+<li>
+<p><img src="/assets/Screenshot%202021-03-10%20125825.png" alt="modle" /></p>
+</li>
+</ul>
+<p>In this figure, we can find the model has 3 stages.</p>
+<hr />
+<p><img src="/assets/Screenshot%202021-03-10%20125841.png" alt="gcn" /></p>
+<p>In this model, we can see GCN process MLP before agg</p>
+<hr />
+<p><img src="/assets/Screenshot%202021-03-10%20125851.png" alt="ratio" /></p>
+<p>In this figure, we can see. aggregate is the main bottleneck</p>
+<hr />
+<p><img src="/assets/Screenshot%202021-03-10%20125909.png" alt="hrd" /></p>
+<p>the overall arch</p>
+<hr />
+<p><img src="/assets/Screenshot%202021-03-10%20125916.png" alt="det" /></p>
+<h4>ring edge reduce(RER)</h4>
+<p>the detailed. The aggregate procedure needs to collect the information according to  the edges information. In our design, the PE sends its data to the northern neighbors and receives the data sent from the southern neighbors for property aggregating. In this manner, a PE can select the relevant vertices to aggregate based on the control signal parsed from the edges during the data flow across the ring. (where the control flow from. what's the cost and implementation)</p>
+<hr />
+<h5>hard to understand here. how it did it?</h5>
+<p><img src="/assets/Screenshot%202021-03-10%20125929.png" alt="re" /></p>
+<p>I cannot under stand this optimization. In the previouse introduction. each PE can only send the data to north. and here???</p>
+<hr />
+<p><img src="/assets/Screenshot%202021-03-10%20125938.png" alt="det" /></p>
+<p>the memory hierarchy for big nodes.</p>
+<hr />
+<p><img src="/assets/Screenshot%202021-03-10%20125953.png" alt="split" /></p>
+<p>the tiling algroithm... it's the same but introduce different scheduling mechanism. HyGCN only have row-major.</p>
+<hr />
+<p><img src="/assets/Screenshot%202021-03-10%20130000.png" alt="io" /></p>
+<p>Q=number of tiles,F=Q size. H, output size for a Q.</p>
+<hr />
+<h4>Section5, proofing</h4>
+<h2>code modifacations</h2>
+<p>support algorithm to choose the best input and output.</p>
+<p>algorithm:</p>
+<p>divide the input to many chunks. </p>
+
+    </div>
+  </body>
+</html>

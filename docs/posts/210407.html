@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <title>fig bugs in new gcn and collected data from the sat</title>
+    </head>
+    <body>
+    <div>
+      <h2>fig bugs in new gcn and collected data from the sat</h2>
+      <h1>fig bugs in new gcn and collected data from the sat</h1>
+<h2>fig bugs in new gcn</h2>
+<ol>
+<li>in ramu and dramsim2, the memory leak problem happend in the inqueue, I forgot to resize the queue vector after I got the channel numbers</li>
+<li>in ramu, another memory leak happend in controller::enqueu in HBM, when it's a refresh cmd. the bank id is -1 and then memory leak happend.</li>
+</ol>
+<h2>test the bandwidth</h2>
+<ol>
+<li>in dramsim3, the total bandwidth is near 256GB/s</li>
+<li>in dramsim2, the total is 32GB/s</li>
+<li>in ramu, the total is 64</li>
+<li>By reading the code in ramu and dramsim, there is a base shift in address mapping , it't tx_size, better to read it to figure out why</li>
+<li>fix bugs to compile the code in husky3, remove the dependecy into system fmt library. fix the bug when try to link catch2WithMain. currently, use clang instead of gcc can solve this problem.</li>
+<li>the tx size information:<a href="../assets/MindShare_DRAM_QRG_v5a.pdf">dram_term</a></li>
+<li>run the run_ramu.py, remember to check it.</li>
+</ol>
+<h2>find the bugs in satacc</h2>
+<ol>
+<li>TO-DO! in real cpu mode. every decision will output a message, the output file is &gt;10G</li>
+<li>in real cpu mode, maybe they not start of stop correctly</li>
+<li>in acc mode. forget to output the mem mlp and band</li>
+<li>the watcher parallelism is wrong...</li>
+<li>the clause might also have some problem</li>
+<li>need to fix this.</li>
+<li>write scripts and draw graphs for results...and find bugs.</li>
+</ol>
+
+    </div>
+  </body>
+</html>

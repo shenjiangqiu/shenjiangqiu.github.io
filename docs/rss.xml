@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?><?xml version="1.0" encoding="utf-8"?><rss version="2.0"><channel><title>cobalt blog</title><link>http://example.com</link><description>Blog Posts Go Here</description><item><title>First Post</title><link>http://example.com/posts/2021-05-24-post-1.html</link><description><![CDATA[<h1>This is our first Post!</h1>
+]]></description><guid>http://example.com/posts/2021-05-24-post-1.html</guid><pubDate>Mon, 24 May 2021 20:23:50 +0000</pubDate></item><item><title>DGL</title><link>http://example.com/posts/210308.html</link><description><![CDATA[<h1>DGL</h1>
+]]></description><guid>http://example.com/posts/210308.html</guid><pubDate>Mon, 24 May 2021 20:23:50 +0000</pubDate></item><item><title>enhance the new GCN, read EnGN</title><link>http://example.com/posts/210309.html</link><description><![CDATA[<h1>enhance the new GCN, read EnGN</h1>
+]]></description><guid>http://example.com/posts/210309.html</guid><pubDate>Mon, 24 May 2021 20:23:50 +0000</pubDate></item><item><title>modify code, the survey</title><link>http://example.com/posts/210311.html</link><description><![CDATA[<h1>modify code, the survey</h1>
+<h2>tasks</h2>
+<ul>
+<li>[ ] start to code</li>
+<li>[ ] read the survey:https://arxiv.org/abs/2010.00130</li>
+<li>[ ] understand the EnGN(RER):<a href="https://github.com/shenjiangqiu/research_notes/blob/master/daily_record/210309.md#hard-to-understand-here-how-it-did-it">Link to question</a></li>
+<li>[ ] read the GraphACT:https://arxiv.org/abs/2001.02498</li>
+</ul>
+]]></description><guid>http://example.com/posts/210311.html</guid><pubDate>Mon, 24 May 2021 20:23:50 +0000</pubDate></item><item><title>OS Project4</title><link>http://example.com/posts/210316.html</link><description><![CDATA[<h1>OS Project4</h1>
+]]></description><guid>http://example.com/posts/210316.html</guid><pubDate>Mon, 24 May 2021 20:23:50 +0000</pubDate></item><item><title>Git squash and rebase</title><link>http://example.com/posts/210405.html</link><description><![CDATA[<h1>Git squash and rebase</h1>
+]]></description><guid>http://example.com/posts/210405.html</guid><pubDate>Mon, 24 May 2021 20:23:50 +0000</pubDate></item><item><title>add support for multiple channel send in GCN and implement memory stats and Realcpu in Minisat</title><link>http://example.com/posts/210406.html</link><description><![CDATA[<h1>add support for multiple channel send in GCN and implement memory stats and Realcpu in Minisat</h1>
+]]></description><guid>http://example.com/posts/210406.html</guid><pubDate>Mon, 24 May 2021 20:23:50 +0000</pubDate></item><item><title>fig bugs in new gcn and collected data from the sat</title><link>http://example.com/posts/210407.html</link><description><![CDATA[<h1>fig bugs in new gcn and collected data from the sat</h1>
+]]></description><guid>http://example.com/posts/210407.html</guid><pubDate>Mon, 24 May 2021 20:23:50 +0000</pubDate></item><item><title>fix bugs in new_gcn and cause other bugs and fix it...</title><link>http://example.com/posts/210408.html</link><description><![CDATA[<h1>fix bugs in new_gcn and cause other bugs and fix it...</h1>
+]]></description><guid>http://example.com/posts/210408.html</guid><pubDate>Mon, 24 May 2021 20:23:50 +0000</pubDate></item><item><title>Friday</title><link>http://example.com/posts/210409.html</link><description><![CDATA[<h1>Friday</h1>
+]]></description><guid>http://example.com/posts/210409.html</guid><pubDate>Mon, 24 May 2021 20:23:50 +0000</pubDate></item><item><title>read papers</title><link>http://example.com/posts/210517.html</link><description><![CDATA[<h1>read papers</h1>
+]]></description><guid>http://example.com/posts/210517.html</guid><pubDate>Mon, 24 May 2021 20:23:50 +0000</pubDate></item><item><title>Analysis result</title><link>http://example.com/posts/210518.html</link><description><![CDATA[<h1>Analysis result</h1>
+]]></description><guid>http://example.com/posts/210518.html</guid><pubDate>Mon, 24 May 2021 20:23:50 +0000</pubDate></item><item><title>new_gcn</title><link>http://example.com/posts/210525.html</link><description><![CDATA[<h1>code design: new_gcn</h1>
+]]></description><guid>http://example.com/posts/210525.html</guid><pubDate>Mon, 24 May 2021 20:23:50 +0000</pubDate></item><item><title>Cats Around the world</title><link>http://example.com/posts/2021-05-24-cats-around-the-world.html</link><description><![CDATA[<h1>This is our first Post!</h1>
+]]></description><guid>http://example.com/posts/2021-05-24-cats-around-the-world.html</guid><pubDate>Mon, 24 May 2021 20:23:39 +0000</pubDate></item></channel></rss>

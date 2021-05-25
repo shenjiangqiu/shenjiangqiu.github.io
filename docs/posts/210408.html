@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <title>fix bugs in new_gcn and cause other bugs and fix it...</title>
+    </head>
+    <body>
+    <div>
+      <h2>fix bugs in new_gcn and cause other bugs and fix it...</h2>
+      <h1>fix bugs in new_gcn and cause other bugs and fix it...</h1>
+<h2>fix bug in the new_gcn memory interface which will cause error in map::out of range</h2>
+<ol>
+<li>add debug information, and find an error in memory interface where the addr to request map add twice and return twice for the same addr.</li>
+<li>later, figure out that the same addr may exist when two request droped in the same cache line</li>
+<li>add a buffer mechanism: where change to map to addr to a vector of reqs, now can merge the request with the same addr</li>
+</ol>
+<h2>fix bug in dead lock after fixing ther previouse bug</h2>
+<ol>
+<li>the bug is happend when I try to run test case, and then dead lock happend.</li>
+<li>add a debug tool: a RAII object to control the debug level</li>
+<li>using the debug tool to find out that, when dead lock happend, the addr_to_req is not empty, means it's still waiting the requst return from the memory</li>
+<li>after adding some logs, find out that all request is already in the map...finnaly find the bug in the previuse if statement.</li>
+</ol>
+<h2>test the model</h2>
+<ul>
+<li>the bandwidht is not expected hight as I thought.</li>
+</ul>
+
+    </div>
+  </body>
+</html>

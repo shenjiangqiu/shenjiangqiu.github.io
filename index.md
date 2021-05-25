@@ -1,7 +1,7 @@
 ---
 layout: default.liquid
 ---
-## Blog!
+## Shenjiangqiu Blogs!
 
 {% for post in collections.posts.pages %}
 [{{ post.title }}]({{ post.permalink }})

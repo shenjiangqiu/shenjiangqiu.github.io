@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <title>Analysis result</title>
+    </head>
+    <body>
+    <div>
+      <h2>Analysis result</h2>
+      <h1>Analysis result</h1>
+<h2>problem: dense and cont seems exactly the same??</h2>
+<h3>try1: run mannuly for one benchmark</h3>
+<ol>
+<li>choose a quick bench:acm_graph_data</li>
+<li>run by create run_test.py</li>
+<li>read the result, find the cycle is still the same</li>
+</ol>
+<h3>try2: change the code, output the configureation</h3>
+<ol>
+<li>is the -enable-dense work??</li>
+<li>build the run.sh to run two exp simutanously</li>
+<li>find the problem! the option is not successfully set, both dense is false!!</li>
+</ol>
+<h2>debug the code to solve the problem</h2>
+<ol>
+<li>read the code to find the reason:failed to find the reason</li>
+<li>read the BoolOption class to read the parse code. find the code is correct</li>
+<li>read the run script again, find the reason: use _ instead of the -, the variable name is _ but the parse string is -!</li>
+</ol>
+<h2>test the test</h2>
+<p>result: pass</p>
+<h2>fix the original run script</h2>
+<p>result: pass</p>
+<h2>re-run the experiments</h2>
+<ul>
+<li>the cont result is valid, only need to run the dense version,set the cores to be 10(original : 4)</li>
+<li>the result seems good</li>
+<li>modifiy the get.py to get the traffic infomation
+<ul>
+<li>seems good</li>
+</ul>
+</li>
+</ul>
+<h2>analysis the data</h2>
+<h3>total_idle_waiting_out is extreamly large!! find that he code in systolic Array is wrong, fix the bug!</h3>
+<pre style="background-color:#2b303b;">
+<span style="color:#c0c5ce;">   commit b68ed9d860aa6fbf8319f1c5685cb28d6fe9abae (HEAD -&gt; master, origin/master, origin/HEAD)
+</span><span style="color:#c0c5ce;">Author: Jiangqiu Shen &lt;jshen2@mtu.edu&gt;
+</span><span style="color:#c0c5ce;">Date:   Tue May 18 13:15:26 2021 -0400
+</span><span style="color:#c0c5ce;">
+</span><span style="color:#c0c5ce;">    fix bug of systolic idle stats
+</span></pre>
+    </div>
+  </body>
+</html>

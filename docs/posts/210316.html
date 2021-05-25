@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <title>OS Project4</title>
+    </head>
+    <body>
+    <div>
+      <h2>OS Project4</h2>
+      <h1>OS Project4</h1>
+<h2>add a systemcall</h2>
+<p>the c code interface: user.h, user program will include this header to link.</p>
+<p>the c code file to which the user program will link: usys.S:</p>
+<pre style="background-color:#2b303b;">
+<span style="color:#c0c5ce;">#define SYSCALL(name) \
+</span><span style="color:#c0c5ce;">  .globl name; \
+</span><span style="color:#c0c5ce;">  name: \
+</span><span style="color:#c0c5ce;">    movl $SYS_ ## name, %eax; \
+</span><span style="color:#c0c5ce;">    int $T_SYSCALL; \
+</span><span style="color:#c0c5ce;">    ret
+</span><span style="color:#c0c5ce;">
+</span></pre>
+<p>this code will generate the implementation for user level fork... like </p>
+<pre style="background-color:#2b303b;">
+<span style="color:#c0c5ce;">
+</span><span style="color:#c0c5ce;">fork(){
+</span><span style="color:#c0c5ce;">    movl $SYS_fork
+</span><span style="color:#c0c5ce;">    int T_SYSCALL;
+</span><span style="color:#c0c5ce;">    ret
+</span><span style="color:#c0c5ce;">}
+</span></pre>
+<p>when use <code>int SYS_fork</code>, it will go to the trap(),if it find it's a T_SYSCALL, it will call syscall() in syscall.c, and read the call number. and will execute:syscall<a href="">num</a>, where syscall is a array to functions, the num is defined in syscall.h, and the function is defined in like sysproc.c or other place, for real call.</p>
+<p>So, inorder to inplement a system call, we need to next several steps:for example fork</p>
+<ol>
+<li>add user.h fork() defination.</li>
+<li>in usys.S, add the name tag and map to SYS_fork number.</li>
+<li>in syscall.h, add the number. that is define the sys_fork number</li>
+<li>in syscall.c map the number in to the real function. in the syscalls array, add the map. SYS_fork number to sys_fork function. add extern link above.</li>
+<li>in another file, like sysproc.c, implement the sys_fork function. if this function have args, add another kernel funcion fork() to take args and execute and sys_fork only extract the args and call fork() in proc.c</li>
+</ol>
+<h2>translate a memory address</h2>
+
+    </div>
+  </body>
+</html>

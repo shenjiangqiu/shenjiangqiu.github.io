@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <title>add support for multiple channel send in GCN and implement memory stats and Realcpu in Minisat</title>
+    </head>
+    <body>
+    <div>
+      <h2>add support for multiple channel send in GCN and implement memory stats and Realcpu in Minisat</h2>
+      <h1>add support for multiple channel send in GCN and implement memory stats and Realcpu in Minisat</h1>
+<h2>add support for multiple channel</h2>
+<ol>
+<li>add support for Mac(remove some asm code)</li>
+<li>update ramulator and dramsim to use new catch and fmt version</li>
+<li>fix a bug in HBM and Dramsim3, there head file have so many same definitions, need to be carefull about the names.</li>
+<li>modify the HBM ramulator and Dramsim3 source code to support get channels and get channel id</li>
+<li>modify the wrappers, add several send queues.</li>
+</ol>
+<h2>add support for memory stats and real cpu for minisat</h2>
+<ol>
+<li>for memory stats, add output in ramulator wrapper.</li>
+<li>for realcpu time. add output and control logic in Solver::solve</li>
+<li>refactor the run script to better support the real time simulation.</li>
+</ol>
+
+    </div>
+  </body>
+</html>
